@@ -1,5 +1,6 @@
 """Classes for melon orders."""
 import random
+from datetime import datetime as dt
 
 class AbstractMelonOrder(object):
     """docstring for AbstractMelonOrder"""
@@ -13,8 +14,20 @@ class AbstractMelonOrder(object):
         self.tax = tax
 
     def get_base_price(self):
+        """ """
+
         base_price = random.choice(range(5,10))
-        return base_price * 1.5 if self.species == "Christmas" else base_price
+        
+        if self.species == "Christmas":
+            base_price *= 1.5 
+
+        td = dt.now()
+
+        if td.weekday() in range(0, 5) and td.hour in range(8, 12):
+            base_price += 4
+            
+        return base_price
+
 
     def get_total(self):
         """Calculate price, including tax."""
@@ -70,12 +83,11 @@ class InternationalMelonOrder(AbstractMelonOrder):
 class GovernmentMelonOrder(AbstractMelonOrder):
     """docstring for GovernmentMelonOrder"""
 
-    def __init__(self, species, qty):
-            """Initialize melon order attributes."""
-
-        super(GovernmentMelonOrder, self).__init__(species, qty, order_type = "government", tax = 0)
- 
     passed_inspection = False
+
+    def __init__(self, species, qty):
+        """Initialize melon order attributes."""
+        super(GovernmentMelonOrder, self).__init__(species, qty, order_type = "government", tax = 0)
 
     def mark_inspection(self, passed):
 
